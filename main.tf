@@ -7,7 +7,7 @@ provider "aws" {
 
 # Create a VPC
 resource "aws_vpc" "example_vpc" {
-  cidr_block = "10.10.0.0/16"
+  cidr_block = var.vpc_cidr_block
   enable_dns_hostnames = true
 }
 
@@ -18,7 +18,7 @@ resource "aws_internet_gateway" "example_gateway" {
 # Create a subnet to launch our instances into
 resource "aws_subnet" "example_subnet" {
   vpc_id                  = aws_vpc.example_vpc.id
-  cidr_block              = "10.10.4.0/24"
+  cidr_block              = var.subnet_cidr_block
   map_public_ip_on_launch = false
 }
 
@@ -99,15 +99,13 @@ resource "aws_instance" "example_vm" {
     user = var.admin_user
   }
 
-  instance_type = "t2.micro"
+  instance_type = var.instance_type
 
   tags = {
-    Name = "example-vm"
+    Name = var.vm_name
   }
 
-  # Lookup the correct AMI based on the region
-  # we specified
-  ami = lookup(var.aws_amis, var.aws_region)
+  ami = var.ami_id
 
   # Our Security group to allow HTTP and SSH access
   vpc_security_group_ids = [aws_security_group.example_security_group.id]
