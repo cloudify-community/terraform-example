@@ -1,0 +1,33 @@
+version: 2.1
+description: test inline job
+
+orbs:
+  cloudify:
+    jobs:
+      cloudify_job:
+        parameters:
+          blueprint_path:
+            description: Path to blueprint
+            type: string
+        executor: test_executor
+        steps:
+          - test_inline_command:
+              path: <<parameters.blueprint_path>>
+    commands:
+      test_inline_command:
+        parameters:
+          path:
+            type: string
+        steps:
+          - run: echo "Hello <<parameters.path>>"
+    executors:
+      test_executor:
+        docker:
+          - image: circleci/python:3.8.2
+
+workflows:
+  build-test-deploy:
+    jobs:
+      - cloudify/cloudify_job:
+          name: test_job_1
+
