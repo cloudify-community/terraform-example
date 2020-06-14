@@ -30,4 +30,4 @@ workflows:
     jobs:
       - cloudify/cloudify_job:
           name: test_job_1
-
+          blueprint_path: "Hello!"
